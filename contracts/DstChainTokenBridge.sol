@@ -13,6 +13,9 @@ interface IERC20Token {
 contract DstChainTokenBridge is UniversalChanIbcApp {
     constructor(address _middleware) UniversalChanIbcApp(_middleware) {}
 
+    event ReceiveSenderAndAmount(address sender, uint256 amount);
+    event ConfirmSenderAndAmount(address sender, uint256 amount);
+
     /**
      * @dev Sends a packet with the caller's address over the universal channel.
      * @param destPortAddr The address of the destination application.
@@ -24,9 +27,8 @@ contract DstChainTokenBridge is UniversalChanIbcApp {
         bytes32 channelId,
         uint256 amount
     ) external {
-        
         IERC20Token token = IERC20Token(
-            0x56794Ad533E78a27e71cCd884B9224d608718ad6
+            0x3D82d3C85Dd36a660B7AA5dFdd02cC850cF35400
         );
         require(token.balanceOf(msg.sender) >= amount, "balance not enough");
 
@@ -34,6 +36,8 @@ contract DstChainTokenBridge is UniversalChanIbcApp {
         uint64 timeoutTimestamp = uint64(
             (block.timestamp + 36000) * 1000000000
         );
+        // Burn the token on the source chain
+        token.burn(msg.sender, amount);
 
         IbcUniversalPacketSender(mw).sendUniversalPacket(
             channelId,
@@ -61,9 +65,11 @@ contract DstChainTokenBridge is UniversalChanIbcApp {
             (address, uint256)
         );
 
+        emit ReceiveSenderAndAmount(payload, amount);
+
         // Mint the token on the source chain
         IERC20Token token = IERC20Token(
-            0xFbF212E97dC81ae8fEABBEd6E84baeD71084612b
+            0x3D82d3C85Dd36a660B7AA5dFdd02cC850cF35400
         );
         token.mint(payload, amount);
 
@@ -90,11 +96,7 @@ contract DstChainTokenBridge is UniversalChanIbcApp {
             (address, uint256)
         );
 
-        // Burn the token on the source chain
-        IERC20Token token = IERC20Token(
-            0xFbF212E97dC81ae8fEABBEd6E84baeD71084612b
-        );
-        token.burn(payload, amount);
+        emit ConfirmSenderAndAmount(payload, amount);
 
     }
 

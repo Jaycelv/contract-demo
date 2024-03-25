@@ -35,7 +35,7 @@ async function runSendPacket(config) {
 
   try {
     await setupIbcPacketEventListener();
-    await runSendPacketCommand(command);
+    //await runSendPacketCommand(command);
   } catch (error) {
     console.error("❌ Error sending packet: ", error);
     process.exit(1);

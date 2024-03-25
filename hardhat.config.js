@@ -26,7 +26,7 @@ module.exports = {
     },
     // for OP testnet
     'optimism': {
-      url: 'https://sepolia.optimism.io',
+      url: 'https://public.stackup.sh/api/v1/node/optimism-sepolia',
       accounts: [
         process.env.PRIVATE_KEY_1,
         process.env.PRIVATE_KEY_2,

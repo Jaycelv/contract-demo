@@ -56,7 +56,7 @@ function deployAndCapture(network, isSource) {
 
 function main() {
   deployAndCapture(source, true);
-  //deployAndCapture(destination, false);
+  deployAndCapture(destination, false);
 }
 
 main();
