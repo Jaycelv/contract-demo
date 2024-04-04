@@ -4,3 +4,9 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "vue-demo"]
+	path = vue-demo
+	url = git@github.com:Jaycelv/vue-demo.git
+[submodule "erc20-demo"]
+	path = erc20-demo
+	url = git@github.com:Jaycelv/erc20-demo.git
