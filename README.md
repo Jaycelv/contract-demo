@@ -1,52 +1,35 @@
-### Project title
+# Phase 1 repo project: Cross-chain Proof of ERC20 token
 Polymer ERC20 token
 
 ### Team members
-    Jaycelv
+- @Jayce - Developer
 
-### Project Overview
+## Description
 I attempted to create a cross-chain bridge between Optimism and Base using the official library, and then created the same ERC20 token on both chains, allowing users to perform cross-chain operations on each chain respectively.
-## 📋 Prerequisites
 
-The repo is **compatible with both Hardhat and Foundry** development environments.
+Features: 
+- Uses Polymer x IBC as the cross-chain format
+- Deploy an ERC20 token across multiple chains, where the total quantity issued on all chains combined equals the total quantity to be issued on the blockchain. The token can be sent from any one chain to another.
 
-- Have [git](https://git-scm.com/downloads) installed
-- Have [node](https://nodejs.org) installed (v18+)
-- Have [Foundry](https://book.getfoundry.sh/getting-started/installation) installed (Hardhat will be installed when running `npm install`)
-- Have [just](https://just.systems/man/en/chapter_1.html) installed (recommended but not strictly necessary)
+## Resources used
 
-You'll need some API keys from third party's:
-- [Optimism Sepolia](https://optimism-sepolia.blockscout.com/account/api-key) and [Base Sepolia](https://base-sepolia.blockscout.com/account/api-key) Blockscout Explorer API keys
-- Have an [Alchemy API key](https://docs.alchemy.com/docs/alchemy-quickstart-guide) for OP and Base Sepolia
+The repo uses the [demo-dapps](https://github.com/polymerdao/demo-dapps) as starting point and adds custom contracts SrcChainTokenBridge and DstChainTokenBridge that implement the custom logic.
 
-Some basic knowledge of all of these tools is also required, although the details are abstracted away for basic usage.
+It added an erc20-demo and vue-demo projects as token and frontend projects, modifying files such as arguments.
 
-## 🧰 Install dependencies
+Additional resources used:
+- Hardhat
+- Blockscout
+- Vue.js
+- bignumber.js
+- web3.js
+- @open-ibc/vibc-core-smart-contracts
 
-To compile your contracts and start testing, make sure that you have all dependencies installed.
 
-From the root directory run:
-
-```bash
-just install
-```
-
-to install the [vIBC core smart contracts](https://github.com/open-ibc/vibc-core-smart-contracts) as a dependency.
-
-Additionally Hardhat will be installed as a dev dependency with some useful plugins. Check `package.json` for an exhaustive list.
-
-> Note: In case you're experiencing issues with dependencies using the `just install` recipe, check that all prerequisites are correctly installed. If issues persist with forge, try to do the individual dependency installations...
-
-## ⚙️ Set up your environment variables
-
-Convert the `.env.example` file into an `.env` file. This will ignore the file for future git commits as well as expose the environment variables. Add your private keys and update the other values if you want to customize (advanced usage feature).
-
-```bash
-cp .env.example .env
-```
-### Run-book
+## Steps to reproduce
 
 1. deploy ERC20 contract
+Go to erc20-demo, config your hardhat.config.js, add your private key, then install deps, compile source code, deploy bytecode
 ```
 cd erc20-demo
 npm install
@@ -55,49 +38,70 @@ npx hardhat run scripts/deploy.js --network optimism
 npx hardhat run scripts/deploy.js --network base
 ```
 then you will get two erc20 token contract address
+(op: 0x6297f7bAACdf1746613D884466e7E644c884aaCD)
+(base: 0x7F9C7F1Dc2D0Ac49C9728Bc4A3Ba4654c2D76a5D)
 
-2. deploy bridge contract
+2. replace erc20 token addresses in bridge contract
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+
+3. deploy bridge contract
+And add your private key to the .env file (rename it from .env.example).
 ```
 cd ..
 just install 
-npx hardhat compile
+just compile
 just deploy optimism base
 ```
-3. You will get 2 contract addresses as port address(current: 0x4e228D691c5A5608EF05666924F9bC49a933D41F and 0x3Ab9640a577331afb5df06EDbb09Da517a072be1)
-4. Set the port address as the administrator:
-    call ERC20 contract to change admin, param is port address from previous step, This function must be called on every chain.
-    `function changeManager(address newManager) public onlyOwner {
-        manager = newManager;
-    }`
-5. run frontend page
+4. You will get 2 contract addresses as port address
+(op: 0x27f34EF4b824884F63f69b6E59948C1E599CdA5B)
+(base: 0x6297f7bAACdf1746613D884466e7E644c884aaCD)
+5. Set the port address as the administrator:
+```
+node scripts/auth.js op
+node scripts/auth.js base
+```
+6. run frontend page
 ```
 cd vue-demo
 npm install && npm run serve
 ```
 See http://localhost:8080/
 6. Add erc20 token to op and base with metamask
-    op: 0x7736dF337A660B58b57D114e45C2327825fb6123
-    base: 0x3D82d3C85Dd36a660B7AA5dFdd02cC850cF35400
-7. Connect wallet and send transaction
+    op: 0x6297f7bAACdf1746613D884466e7E644c884aaCD
+    base: 0x7F9C7F1Dc2D0Ac49C9728Bc4A3Ba4654c2D76a5D
 
-### Resources Used
-- vue.js
-- hardhat
-- bignumber.js
-- web3.js
-- @open-ibc/vibc-core-smart-contracts
+## Proof of testnet interaction
+
+After following the steps above you should have interacted with the testnet. You can check this at the [IBC Explorer](https://explorer.ethdenver.testnet.polymer.zone/).
+
+Here's the data of our application:
+
+- SrcChainTokenBridge (OP Sepolia) : 0x27f34EF4b824884F63f69b6E59948C1E599CdA5B
+- DstChainTokenBridge (Base Sepolia): 0x6297f7bAACdf1746613D884466e7E644c884aaCD
+- Channel (OP Sepolia): channel-10
+- Channel (Base Sepolia): channel-11
+
+- Proof of Testnet interaction:
+    - [SendTx](https://optimism-sepolia.blockscout.com/tx/0xb19cb4c218b10371f474745130bd41a4c4eea8c014816745dc9253d2b9a317d7?tab=index)
+    - [RecvTx](https://base-sepolia.blockscout.com/tx/0x20dbe9f57289bbc13532e3dd3c486aef358919e429a5c6aaefd676b9f8bc0ea1)
+    ![alt text](image-4.png)
+
+## Challenges Faced
+
+- I am not in the same time zone as the core developers; when encountering issues and seeking solutions in the community, timely responses are not received.
+
+## What we learned
+
+How to make the first dApp using Polymer.
 
 ### Future Improvements
-In the future, I will refactor the smart contract code, remove unnecessary demo code, integrate the bridge and ERC20 into one contract, and improve the UI.
-
-### Testnet interaction
-Optimism: https://optimism-sepolia.blockscout.com/address/0x4e228D691c5A5608EF05666924F9bC49a933D41F?tab=internal_txns
-Base: https://base-sepolia.blockscout.com/address/0x3Ab9640a577331afb5df06EDbb09Da517a072be1?tab=internal_txns
-
-### PortAddress
-Op: 0x4e228D691c5A5608EF05666924F9bC49a933D41F
-Base: 0x3Ab9640a577331afb5df06EDbb09Da517a072be1
- 
+- I will refactor the smart contract code
+- remove unnecessary demo code
+- integrate the bridge and ERC20 into one contract
+- improve the UI.
 
 ### Licence
 [Apache 2.0](LICENSE)

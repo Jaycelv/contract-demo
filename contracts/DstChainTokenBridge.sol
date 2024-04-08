@@ -28,7 +28,7 @@ contract DstChainTokenBridge is UniversalChanIbcApp {
         uint256 amount
     ) external {
         IERC20Token token = IERC20Token(
-            0x3D82d3C85Dd36a660B7AA5dFdd02cC850cF35400
+            0x7F9C7F1Dc2D0Ac49C9728Bc4A3Ba4654c2D76a5D
         );
         require(token.balanceOf(msg.sender) >= amount, "balance not enough");
 
@@ -69,7 +69,7 @@ contract DstChainTokenBridge is UniversalChanIbcApp {
 
         // Mint the token on the source chain
         IERC20Token token = IERC20Token(
-            0x3D82d3C85Dd36a660B7AA5dFdd02cC850cF35400
+            0x7F9C7F1Dc2D0Ac49C9728Bc4A3Ba4654c2D76a5D
         );
         token.mint(payload, amount);
 

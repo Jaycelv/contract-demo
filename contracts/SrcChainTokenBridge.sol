@@ -28,7 +28,7 @@ contract SrcChainTokenBridge is UniversalChanIbcApp {
         uint256 amount
     ) external {
         IERC20Token token = IERC20Token(
-            0x7736dF337A660B58b57D114e45C2327825fb6123
+            0x6297f7bAACdf1746613D884466e7E644c884aaCD
         );
         require(token.balanceOf(msg.sender) >= amount, "balance not enough");
 
@@ -69,7 +69,7 @@ contract SrcChainTokenBridge is UniversalChanIbcApp {
 
         // Mint the token on the source chain
         IERC20Token token = IERC20Token(
-            0x7736dF337A660B58b57D114e45C2327825fb6123
+            0x6297f7bAACdf1746613D884466e7E644c884aaCD
         );
         token.mint(payload, amount);
 
